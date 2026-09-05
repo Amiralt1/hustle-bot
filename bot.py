@@ -272,7 +272,7 @@ async def handle_crypto_webhook(request: web.Request):
         logging.error(f"Ошибка в вебхуке CryptoBot: {e}")
         return web.Response(status=500, text="Internal Error")
 
-# Обработчик для пингов UptimeRobot (чтобыRender не спал)
+# Обработчик для пингов UptimeRobot (чтобы Render не спал)
 async def handle_root(request: web.Request):
     return web.Response(status=200, text="Hustle Bot is active!")
 
@@ -293,7 +293,24 @@ async def cmd_start(message: types.Message):
         "У тебя есть <b>9 бесплатных запросов</b> на каждый день — трать с умом.\n\n"
         "Спрашивай по теме: крипта, темки, трафик или как разьебать неуверенность. Что у тебя?\n\n"
         "Хочешь зайти на базу по-взрослому? Жми сюда: /buy\n\n"
-        "P.S.💡 Посмотреть актуальные лимиты и тарифы подписок можно в любой момент по команде: /info",
+        "P.S. 💡 Посмотреть актуальные лимиты и тарифы подписок можно в любой момент по команде: /info",
+        parse_mode="HTML"
+    )
+
+
+@dp.message(Command("info"))
+async def cmd_info(message: types.Message):
+    await message.answer(
+        "💎 <b>Доступные тарифы и лимиты:</b>\n\n"
+        "🤖 <b>Тариф «Инсайдер»</b>\n"
+        "• <b>Лимит:</b> 120 запросов в сутки\n"
+        "• <b>Доступ:</b> ко всем фичам бота / эксклюзивным функциям\n"
+        "• <b>Цена:</b> 600 звёзд / 29$ в месяц\n\n"
+        "👑 <b>Тариф «Syndicate Elite» (VIP)</b>\n"
+        "• <b>Лимит:</b> Абсолютный безлимит\n"
+        "• <b>Доступ:</b> Максимальный приоритет, топовые инсайдерские связки\n"
+        "• <b>Цена:</b> 1800 звёзд / 99$ в месяц\n\n"
+        "ℹ️ Выбрать и оформить подписку можно через команду: /buy",
         parse_mode="HTML"
     )
 
@@ -334,7 +351,7 @@ async def cmd_buy(message: types.Message):
             ],
             [
                 InlineKeyboardButton(
-                    text="💎 Syndicate Elite — 1800 ⭐️ (~99$)",
+                    text="💎 Syndicate Elite (VIP) — 1800 ⭐️ (~99$)",
                     callback_data="buy_star_2",
                 )
             ],
@@ -434,7 +451,7 @@ async def process_crypto_purchase(callback: types.CallbackQuery):
             ]
         )
         await callback.message.answer(
-            "Оплата Syndicate Elite через CryptoBot (99$):\n\nЖми кнопку ниже для перевода:",
+            "Оплата Syndicate Elite (VIP) через CryptoBot (99$):\n\nЖми кнопку ниже для перевода:",
             reply_markup=crypto_keyboard,
         )
 
@@ -548,7 +565,6 @@ async def main():
     runner = web.AppRunner(app)
     await runner.setup()
     
-    # Динамический порт для хостинга (Render, Koyeb и др.) с дефолтом 8080 для локала
     port = int(getenv("PORT", 8080))
     site = web.TCPSite(runner, "0.0.0.0", port)
     
