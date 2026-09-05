@@ -527,7 +527,7 @@ async def handle_message(message: types.Message):
         response = await groq_client.chat.completions.create(
             model=GROQ_MODEL,
             messages=messages,
-            max_tokens=600,
+            max_tokens=2048,  # <--- ИСПРАВЛЕНО: теперь портянки текста будут дописываться до конца
             temperature=0.7,
         )
 
