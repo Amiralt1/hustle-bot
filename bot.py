@@ -239,7 +239,7 @@ async def create_crypto_invoice(chat_id: int, amount: float, asset: str, tariff:
         print(f"❌ Сетевая ошибка при запросе к Crypto Pay API: {e}")
     return None
 
-# === AIOHTTP ВЕБ-СЕРВЕР ДЛЯ ВЕБХУКОВ CRYPTOBOT ===
+# === AIOHTTP ВЕБ-СЕРВЕР ДЛЯ ВЕБХУКОВ CRYPTOBOT И ПИНГОВ UPTIMEROBOT ===
 async def handle_crypto_webhook(request: web.Request):
     try:
         data = await request.json()
@@ -272,8 +272,13 @@ async def handle_crypto_webhook(request: web.Request):
         logging.error(f"Ошибка в вебхуке CryptoBot: {e}")
         return web.Response(status=500, text="Internal Error")
 
+# Обработчик для пингов UptimeRobot (чтобыRender не спал)
+async def handle_root(request: web.Request):
+    return web.Response(status=200, text="Hustle Bot is active!")
+
 # Создаем приложение aiohttp
 app = web.Application()
+app.router.add_get("/", handle_root)
 app.router.add_post("/", handle_crypto_webhook)
 app.router.add_post("/crypto-webhook", handle_crypto_webhook)
 
